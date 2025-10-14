@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            padding: 40px 28px;
+            width: 340px;
+            animation: fadeIn 1s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .display {
+            background: #f3f6fb;
+            border-radius: 12px;
+            font-size: 2.2rem;
+            padding: 18px;
+            margin-bottom: 28px;
+            text-align: right;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            min-height: 48px;
+            transition: box-shadow 0.3s, background 0.3s;
+        }
+        .display.animated {
+            background: #dff9fb;
+            box-shadow: 0 0 16px #74ebd5;
+            animation: popDisplay 0.3s;
+        }
+        @keyframes popDisplay {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+        button {
+            padding: 20px 0;
+            font-size: 1.25rem;
+            border: none;
+            border-radius: 10px;
+            background: #e0e7ef;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+        }
+        button:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 12px #74ebd5;
+        }
+        button:hover {
+            background: #b2bec3;
+        }
+        .operator {
+            background: linear-gradient(135deg, #74ebd5 0%, #00b894 100%);
+            color: #fff;
+        }
+        .operator:hover {
+            background: linear-gradient(135deg, #00b894 0%, #74ebd5 100%);
+        }
+        .equals {
+            background: linear-gradient(135deg, #ACB6E5 0%, #0984e3 100%);
+            color: #fff;
+        }
+        .equals:hover {
+            background: linear-gradient(135deg, #0984e3 0%, #ACB6E5 100%);
+        }
+        .clear {
+            background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+            color: #fff;
+        }
+        .clear:hover {
+            background: linear-gradient(135deg, #d63031 0%, #ff7675 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button onclick="press('7')">7</button>
+            <button onclick="press('8')">8</button>
+            <button onclick="press('9')">9</button>
+            <button class="operator" onclick="press('/')">÷</button>
+            <button onclick="press('4')">4</button>
+            <button onclick="press('5')">5</button>
+            <button onclick="press('6')">6</button>
+            <button class="operator" onclick="press('*')">×</button>
+            <button onclick="press('1')">1</button>
+            <button onclick="press('2')">2</button>
+            <button onclick="press('3')">3</button>
+            <button class="operator" onclick="press('-')">−</button>
+            <button onclick="press('0')">0</button>
+            <button onclick="press('.')">.</button>
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="operator" onclick="press('+')">+</button>
+            <button class="equals" style="grid-column: span 4;" onclick="calculate()">=</button>
+        </div>
+    </div>
+    <script>
+        let current = '';
+        let resetNext = false;
+        const display = document.getElementById('display');
+
+        function animateDisplay() {
+            display.classList.add('animated');
+            setTimeout(() => {
+                display.classList.remove('animated');
+            }, 300);
+        }
+
+        function press(val) {
+            if (resetNext) {
+                current = '';
+                resetNext = false;
+            }
+            if (current.length === 0 && (val === '+' || val === '-' || val === '*' || val === '/')) {
+                return;
+            }
+            current += val;
+            display.textContent = current;
+            animateDisplay();
+        }
+
+        function clearDisplay() {
+            current = '';
+            display.textContent = '0';
+            animateDisplay();
+        }
+
+        function calculate() {
+            try {
+                let result = eval(current.replace(/÷/g, '/').replace(/×/g, '*'));
+                display.textContent = result;
+                current = result.toString();
+                resetNext = true;
+            } catch {
+                display.textContent = 'Error';
+                current = '';
+                resetNext = true;
+            }
+            animateDisplay();
+        }
+    </script>
+</body>
+</html>
